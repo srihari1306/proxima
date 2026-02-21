@@ -1,0 +1,17 @@
+# Java
+target/
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Python (later)
+__pycache__/
+*.pkl
+
+# Docker
+.env
