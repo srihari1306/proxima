@@ -17,13 +17,16 @@ public class StartupConfig implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
+        register("backend-1", 8081);
+        register("backend-2", 8082);
+        register("backend-3", 8083);
+    }
+
+    private void register(String id, int port) {
         BackendNode backend = new BackendNode();
-        backend.setId("backend-1");
+        backend.setId(id);
         backend.setHost("localhost");
-        backend.setPort(8081);
-
+        backend.setPort(port);
         registry.register(backend);
-
-        System.out.println("Registered backend-1");
     }
 }
