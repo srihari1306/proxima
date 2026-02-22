@@ -8,6 +8,8 @@ import com.example.load_balancer.registry.BackendRegistry;
 import com.example.load_balancer.strategy.RoutingStrategy;
 import com.example.load_balancer.strategy.StrategyManager;
 import com.example.load_balancer.circuit.CircuitBreakerManager;
+import com.example.load_balancer.logging.LogEntry;
+import com.example.load_balancer.logging.RequestLogger;
 import com.example.load_balancer.model.BackendNode;
 import com.example.load_balancer.model.HealthStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +22,14 @@ public class LoadBalancerContoller {
     private final BackendRegistry registry;
     private final StrategyManager manager;
     private final CircuitBreakerManager circuitManager;
+    private final RequestLogger logger;
     private RestTemplate rest;
 
-    public LoadBalancerContoller(BackendRegistry registry, StrategyManager manager, RestTemplate rest, CircuitBreakerManager circuitManager){
+    public LoadBalancerContoller(BackendRegistry registry, StrategyManager manager, RestTemplate rest, CircuitBreakerManager circuitManager, RequestLogger logger){
         this.registry = registry;
         this.manager = manager;
         this.circuitManager = circuitManager;
+        this.logger = logger;
         this.rest = rest;
     }
 
@@ -50,6 +54,14 @@ public class LoadBalancerContoller {
         }
 
         long start = System.currentTimeMillis();
+        LogEntry entry = new LogEntry();
+        entry.timestamp = System.currentTimeMillis();
+        entry.strategy = strategy.name();
+        entry.backendId = backend.getId();
+        entry.activeConnections = backend.getActiveConnections();
+        entry.avgLatency = backend.getAvgLatency();
+        entry.requestRate = backend.getRequestRate();
+        entry.lastLatency = backend.getLastLatency();
         try{
             ResponseEntity<String> response = rest.getForEntity(backend.url()+"/process", String.class);
 
@@ -57,6 +69,9 @@ public class LoadBalancerContoller {
 
             circuitManager.success(backend.getId());
             strategy.after(backend, latency, true);
+            entry.observedLatency = latency;
+            entry.success = true;
+            logger.log(entry);
 
             return response;
         } catch (Exception e) {
@@ -64,7 +79,10 @@ public class LoadBalancerContoller {
 
             circuitManager.failure(backend.getId());
             strategy.after(backend, latency, false);
-            
+            entry.observedLatency = latency;
+            entry.success = false;
+            logger.log(entry);
+
             return ResponseEntity.status(500).body("backend failure");
         }
     }
