@@ -6,11 +6,13 @@ import org.springframework.stereotype.Component;
 public class StrategyManager {
     private final RoundRobinStrategy rr;
     private final LeastConnectionsStrategy lc;
+    private final MLPredictiveStrategy ml;
 
     private RoutingStrategy current;
-    public StrategyManager(RoundRobinStrategy rr, LeastConnectionsStrategy lc){
+    public StrategyManager(RoundRobinStrategy rr, LeastConnectionsStrategy lc, MLPredictiveStrategy ml){
         this.rr = rr;
         this.lc = lc;
+        this.ml = ml;
         this.current = rr; // default
     }
 
@@ -21,6 +23,8 @@ public class StrategyManager {
     public void set(String name){
         if("least-connections".equalsIgnoreCase(name))
             current = lc;
+        else if("ml-predictive".equalsIgnoreCase(name))
+            current = ml;
         else
             current = rr;
     }

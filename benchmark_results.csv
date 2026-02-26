@@ -1,0 +1,13 @@
+strategy,scenario,p50,p95,p99,rps
+round-robin,S2-HighConcurrency,0.053,0.0638,0.0933,3443.7244
+least-connections,S2-HighConcurrency,0.0531,0.0635,0.0735,3506.413
+ml-predictive,S2-HighConcurrency,0.0548,0.1435,0.2527,2766.027
+round-robin,S3-SingleDegradation,0.0589,0.1527,0.1661,970.391
+least-connections,S3-SingleDegradation,0.0581,0.1319,0.1404,1326.559
+ml-predictive,S3-SingleDegradation,0.0588,0.1571,0.1991,943.0481
+round-robin,S4-HighJitter,0.0526,0.2124,0.2898,1111.0849
+least-connections,S4-HighJitter,0.0527,0.2205,0.2851,1169.6717
+ml-predictive,S4-HighJitter,0.0541,0.2004,0.291,1137.13
+round-robin,S5-BackendFailure,0.0532,0.0634,0.0662,1783.7578
+least-connections,S5-BackendFailure,0.0533,0.0636,0.0661,1748.4181
+ml-predictive,S5-BackendFailure,0.0547,0.0889,0.1516,1604.0519
