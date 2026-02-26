@@ -1,17 +1,69 @@
-# Java
-target/
-*.log
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 
+# Virtual Environment
+venv/
+.env/
+.venv/
+
+# Environment Variables
+.env
+.env.*
+
+# =========================
+# ML Artifacts
+# =========================
+*.pkl
+*.joblib
+*.h5
+*.model
+*.pt
+*.pth
+*.onnx
+
+# Generated Plots
+*.png
+*.jpg
+*.jpeg
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Build / Dist
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
 # IDE
+# =========================
 .idea/
 .vscode/
+*.swp
+*.swo
 
+# =========================
 # OS
+# =========================
 .DS_Store
+Thumbs.db
 
-# Python (later)
-__pycache__/
-*.pkl
-
+# =========================
 # Docker
-.env
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Java (if present)
+# =========================
+target/
