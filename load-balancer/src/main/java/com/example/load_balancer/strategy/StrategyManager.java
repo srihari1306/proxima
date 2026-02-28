@@ -7,12 +7,14 @@ public class StrategyManager {
     private final RoundRobinStrategy rr;
     private final LeastConnectionsStrategy lc;
     private final MLPredictiveStrategy ml;
+    private final EWMAPredictiveStrategy ewma;
 
     private RoutingStrategy current;
-    public StrategyManager(RoundRobinStrategy rr, LeastConnectionsStrategy lc, MLPredictiveStrategy ml){
+    public StrategyManager(RoundRobinStrategy rr, LeastConnectionsStrategy lc, MLPredictiveStrategy ml, EWMAPredictiveStrategy ewma){
         this.rr = rr;
         this.lc = lc;
         this.ml = ml;
+        this.ewma = ewma;
         this.current = rr; // default
     }
 
@@ -25,6 +27,8 @@ public class StrategyManager {
             current = lc;
         else if("ml-predictive".equalsIgnoreCase(name))
             current = ml;
+        else if("ewma-predictive".equalsIgnoreCase(name))
+            current = ewma;
         else
             current = rr;
     }
