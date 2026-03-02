@@ -30,22 +30,47 @@ public class LatencySimulator {
         Thread.sleep(latency);
     }
 
-    private int calculateLatency(){
+    // private int calculateLatency(){
+    //     int base = baseLatencyMs.get();
+    //     int jitter = ThreadLocalRandom.current().nextInt(-jitterMs.get(), jitterMs.get() + 1);
+    //     if(degrading){
+    //         long elapsed = System.currentTimeMillis() - degradionStart;
+    //         long total = durationSeconds * 1000L;
+
+    //         if(elapsed >=total){
+    //             base = targetLatency;
+    //         }
+    //         else{
+    //             double factor = (double) elapsed / total;
+    //             base = (int) (base + factor * (targetLatency - base));
+    //         }
+    //     }
+    //     return Math.max(0, base + jitter);
+    // }
+
+    private int calculateLatency() {
         int base = baseLatencyMs.get();
-        int jitter = ThreadLocalRandom.current().nextInt(-jitterMs.get(), jitterMs.get() + 1);
-        if(degrading){
+
+        if (degrading) {
             long elapsed = System.currentTimeMillis() - degradionStart;
             long total = durationSeconds * 1000L;
 
-            if(elapsed >=total){
+            if (elapsed >= total) {
                 base = targetLatency;
-            }
-            else{
+            } else {
                 double factor = (double) elapsed / total;
                 base = (int) (base + factor * (targetLatency - base));
             }
         }
-        return Math.max(0, base + jitter);
+
+        // Exponential service time (realistic)
+        double u = ThreadLocalRandom.current().nextDouble();
+        int expLatency = (int) (-Math.log(1 - u) * base);
+
+        int jitter = ThreadLocalRandom.current()
+                .nextInt(-jitterMs.get(), jitterMs.get() + 1);
+
+        return Math.max(1, expLatency + jitter);
     }
 
     public void configure(int baseLatency, int jitter){
